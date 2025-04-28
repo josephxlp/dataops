@@ -74,7 +74,7 @@ def sentinel1_download_tiles(g, pol, name, S1tile_path, scale, cpus=10):
     with ThreadPoolExecutor(max_workers=cpus) as executor:
         futures = []
         for j in range(g.shape[0]):
-            if j > 2: break
+            #if j > 2: break
             futures.append(executor.submit(download_sentinel1, j, g, pol, name, S1tile_path, scale))
 
 def main():
@@ -95,6 +95,8 @@ def main():
     ti = time.perf_counter()
 
     for i, gfile in enumerate(tqdm(gpkg_files, desc="Processing Files", unit="file")):
+        if i > 100: break #0
+        print(gfile)
         g = gpd.read_file(gfile)
         g[['minx', 'miny', 'maxx', 'maxy']] = g.bounds
         tname = os.path.splitext(os.path.basename(gfile))[0]
