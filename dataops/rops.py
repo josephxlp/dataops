@@ -1,11 +1,41 @@
 ### use magic tools to make into a python script 
 import os 
+from glob import glob
 import subprocess
+import geopandas as gpd
+
 import rasterio
 from rasterio.mask import mask
-import geopandas as gpd
 from shapely.geometry import box  
-from glob import glob
+from rasterio.merge import merge
+
+
+def merge_tifs(tif_files, output_path):
+
+    if not os.path.isfile(output_path):
+        return output_path
+    # Open all TIFF files
+    src_files = [rasterio.open(f) for f in tif_files]
+    
+    # Merge the rasters
+    merged_array, merged_transform = merge(src_files)
+    
+    # Use metadata from the first file
+    out_meta = src_files[0].meta.copy()
+    out_meta.update({
+        "driver": "GTiff",
+        "height": merged_array.shape[1],
+        "width": merged_array.shape[2],
+        "transform": merged_transform
+    })
+    
+    # Write merged raster
+    with rasterio.open(output_path, "w", **out_meta) as dest:
+        dest.write(merged_array)
+    
+    # Close files
+    for src in src_files:
+        src.close()
 
 def clip_raster_by_vector_cutline(raster_fn, out_fn, bbox_fn):
     pass 
@@ -94,6 +124,8 @@ def gdalreproject(fi, fo, res=1/3600, epsgcode=4749):
 # def list2txt(txt, files):
 #     with open(txt, "w") as f:
 #         f.write("\n".join(files))
+
+
 
 def list2txt(txt, files):
     with open(txt, "w") as f:
