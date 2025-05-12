@@ -95,7 +95,7 @@ def main():
     ti = time.perf_counter()
 
     for i, gfile in enumerate(tqdm(gpkg_files, desc="Processing Files", unit="file")):
-        if i > 100: break #0
+        #if i > 100: break #0
         print(gfile)
         g = gpd.read_file(gfile)
         g[['minx', 'miny', 'maxx', 'maxy']] = g.bounds
