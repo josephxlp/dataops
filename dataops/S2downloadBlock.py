@@ -10,7 +10,6 @@ from os.path import basename, join, isfile
 from concurrent.futures import ThreadPoolExecutor
 import geopandas as gpd
 import GoogleEarthEngineDatasets as geed
-
 import datetime
 
 def get_current_datetime():
@@ -22,6 +21,7 @@ def get_current_datetime():
     """
     now = datetime.datetime.now()
     return now
+
 
 def s2_median_image(aoi, idate='2019-01-01', fdate='2022-12-01'):
     """Fetch median Sentinel-2 RGB image for given AOI."""
@@ -98,8 +98,10 @@ def split_gpkg_files(gpkg_list, group_size):
 
 def main():
     from uvars import data_download_dir, pathern
+
     t1 = get_current_datetime()
     print(f"starting @{t1}")
+
     scale = 30
     group_size = 2  # Process gpkg files in small groups
 
@@ -135,5 +137,6 @@ def main():
     
     t2 = time.time()
     print()
+
 if __name__ == "__main__":
     main()
